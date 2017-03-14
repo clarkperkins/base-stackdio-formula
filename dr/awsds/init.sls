@@ -13,24 +13,13 @@ ad_packages:
       - ntp
       - sssd
 
-/etc/resolv.conf:
-  file:
-    - managed
-    - source: salt://dr/etc/resolv.conf
-    - template: jinja
-    - user: root
-    - group: root
-    - mode: 644
-    - require:
-      - pkg: ad_packages
-
 authconfig:
   cmd:
     - run
     - name: authconfig --enableshadow --enablemkhomedir --enableldap --ldapserver={{ pillar.dr.ad.ldap_server }} --ldapbasedn={{ pillar.dr.ad.ldap_base_dn }} --disableldaptls --enablekrb5 --enablekrb5kdcdns --enablesssd --enablesssdauth --krb5realm={{ pillar.dr.ad.krb5_realm }} --krb5adminserver={{ pillar.dr.ad.krb5_admin_server }} --updateall
     - user: root
     - require:
-      - file: /etc/resolv.conf
+      - pkg: ad_packages
 
 /etc/sssd/sssd.conf:
   file:

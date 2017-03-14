@@ -33,7 +33,6 @@ pillar_defaults:
       install: false
       key: MUST_PROVIDE_VALUE
     ad:
-      allow_group:
       server_fqdn: MUST_PROVIDE_VALUE
       ldap_bind_dn:
       ldap_bind_password:
