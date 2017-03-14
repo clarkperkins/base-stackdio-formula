@@ -14,9 +14,13 @@ components:
   - title: AWS Directory Service
     description: Enable authentication from an AWS Directory Service directory
     sls_path: dr.awsds
-  - title: IPA
-    description: Enable IPA authentication
-    sls_path: dr.ipa
+  - title: Native Development
+    description: Install necessary packages to build our native binaries
+    sls_path: dr.native_development
+  - title: Yourkit
+    description: Install yourkit binaries
+    sls_path: dr.yourkit
+
 pillar_defaults:
   dr:
     aws_access_key: MUST_PROVIDE_VALUE
@@ -25,27 +29,18 @@ pillar_defaults:
     authorized_keys:
       - OPTIONAL_LIST_OF_KEYS
     harvest_provider: hbase-cdh5
+    cloudhealth:
+      install: false
+      key: MUST_PROVIDE_VALUE
     ad:
-      nameservers: []
       allow_group:
-      ldap_server: MUST_PROVIDE_VALUE
+      server_fqdn: MUST_PROVIDE_VALUE
       ldap_bind_dn:
       ldap_bind_password:
       ldap_base_dn:
       ldap_access_filter:
       krb5_realm:
-      krb5_kdc:
-      krb5_admin_server:
       idmap_domain:
-  ipa:
-    sshfs_hostname: MUST_PROVIDE_VALUE
-    sshfs_private_key: MUST_PROVIDE_VALUE
-    sshfs_public_key: MUST_PROVIDE_VALUE
-    ldap_uris: MUST_PROVIDE_LIST
-    search_base: MUST_PROVIDE_VALUE
-    client_domain: MUST_PROVIDE_VALUE
-    server: MUST_PROVIDE_VALUE
-    realm: MUST_PROVIDE_VALUE
-    client_password: MUST_PROVIDE_VALUE
-
-
+    yourkit:
+      version: yjp-2015-build-15088
+      install_path: /mnt/yourkit

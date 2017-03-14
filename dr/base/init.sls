@@ -13,6 +13,14 @@ disable-{{svc}}:
   'RedHat': 'vim-enhanced'
 }) %}
 
+{% set pip_pkg = salt['grains.filter_by']({
+  'Debian': 'python-pip',
+  'RedHat': salt['grains.filter_by']({
+    '6': 'python-pip',
+    '7': 'python2-pip'
+  }, 'osmajorrelease')
+}) %}
+
 #
 # Setup AWS credentials and tools
 #
@@ -73,12 +81,13 @@ base_packages:
     - pkgs:
       - createrepo
       - ntp
-      - python-pip
+      - {{ pip_pkg }}
       - s3cmd
       - screen
       - sysstat
       - tmux
       - unzip
+      - wget
       - {{ vim_pkg }}
       - zsh
 
@@ -163,3 +172,24 @@ ntpd-svc:
     - name: {{ ntp_svc }}
     - require:
       - pkg: base_packages
+
+{% if pillar.dr.cloudhealth.install %}
+
+# Cloud health things
+install-script:
+  cmd:
+    - run
+    - name: curl -o /tmp/cloudhealth.sh https://s3.amazonaws.com/remote-collector/agent/v14/install_cht_perfmon.sh
+    - user: root
+
+run-script:
+  cmd:
+    - run
+    - name: sh cloudhealth.sh 14 {{ pillar.dr.cloudhealth.key }} aws
+    - user: root
+    - cwd: /tmp
+    - require:
+      - cmd: install-script
+      - pkg: base_packages
+
+{% endif %}
